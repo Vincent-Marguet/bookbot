@@ -1,0 +1,4 @@
+# Remove books directory from being added to git
+books/
+*test*
+*pycache*
