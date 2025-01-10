@@ -101,48 +101,54 @@ def main():
         help="Displays the descending sorted character count for each alphabetic UTF-8 character from FILE",
     )
     parser.add_argument("-p", "--print", help="Print the entire FILE on screen")
-
+    argument_set = {
+        "-p",
+        "--print",
+        "-cc",
+        "--char-count",
+        "-r",
+        "--ranked",
+        "-c",
+        "--count",
+    }
     try:
-        text_path = sys.argv[1]
-        file_handle = file_handler(text_path)
-        if len(sys.argv) > 2:
-            for i in range(2, len(sys.argv)):
-                if (
-                    sys.argv[i] != "-p"
-                    and sys.argv[i] != "-cc"
-                    and sys.argv[i] != "-r"
-                    and sys.argv[i] != "-c"
-                ):
-                    parser.print_help()
-                    return
-
-                if sys.argv[i] == "-p":
-                    print(file_handle)
-                    print("\n")
-            print(f"\n---------- REPORT OF {text_path} ----------\n")
-            for i in range(2, len(sys.argv)):
-                if sys.argv[i] == "-c":
-                    word_count = count_words(file_handle)
-                    print(f"The number of words is {word_count}\n")
-                elif sys.argv[i] == "-cc":
-                    counted_char_dict = {}
-                    counted_char_dict = count_character_occurrence(file_handle)
-                    for key, value in counted_char_dict.items():
-                        print(f"The character {key} has been found: {value} times")
-                elif sys.argv[i] == "-r":
-                    character_occurrence_count = count_character_occurrence(file_handle)
-                    ranked_characters_by_highest_occurrence = rank_character_occurrence(
-                        character_occurrence_count
-                    )
-                    for (
-                        key,
-                        value,
-                    ) in ranked_characters_by_highest_occurrence.items():
-                        print(f"The character {key} was found {value} times")
-            print("\n---------- END OF REPORT ----------")
-        else:
+        if len(sys.argv) <= 2:
             parser.print_help()
             return
+
+        text_path = sys.argv[1]
+        file_handle = file_handler(text_path)
+
+        for i in range(2, len(sys.argv)):
+            if sys.argv[i] not in argument_set:
+                parser.print_help()
+                return
+
+        for i in range(2, len(sys.argv)):
+            if sys.argv[i] == "-p" or sys.argv[i] == "--print":
+                print(file_handle)
+                print("\n")
+        print(f"\n---------- REPORT OF {text_path} ----------\n")
+        for i in range(2, len(sys.argv)):
+            if sys.argv[i] == "-c" or sys.argv[i] == "--count":
+                word_count = count_words(file_handle)
+                print(f"The number of words is {word_count}\n")
+            elif sys.argv[i] == "-cc" or sys.argv[i] == "--char-count":
+                counted_char_dict = {}
+                counted_char_dict = count_character_occurrence(file_handle)
+                for key, value in counted_char_dict.items():
+                    print(f"The character {key} has been found: {value} times")
+            elif sys.argv[i] == "-r" or sys.argv[i] == "--char-ranked":
+                character_occurrence_count = count_character_occurrence(file_handle)
+                ranked_characters_by_highest_occurrence = rank_character_occurrence(
+                    character_occurrence_count
+                )
+                for (
+                    key,
+                    value,
+                ) in ranked_characters_by_highest_occurrence.items():
+                    print(f"The character {key} was found {value} times")
+        print("\n---------- END OF REPORT ----------")
     except argparse.ArgumentError as a:
         print(a)
     except IndexError:
