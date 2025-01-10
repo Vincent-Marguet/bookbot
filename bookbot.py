@@ -24,7 +24,11 @@ def file_handler(path):
             file_handle = f.read()
             return file_handle
     except FileNotFoundError:
-        return print(f"\nERROR: The file : {path} cannot be found\n")
+        print(f"\nERROR: The file : {path} cannot be found\n")
+        print(
+            "To display help type ONLY the --help (or -h) option: python3 booknote.py --help (or-h)"
+        )
+        sys.exit()
 
 
 def count_character_occurrence(text):
